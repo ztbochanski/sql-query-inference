@@ -1,0 +1,73 @@
+[
+  {
+    "similar_tables": [
+      "brand",
+      "brand_category",
+      "browser",
+      "city",
+      "operating_system",
+      "public.brand",
+      "public.brand_category",
+      "public.browser",
+      "public.city",
+      "public.operating_system",
+      "public.region",
+      "region"
+    ],
+    "grouped_by": ["brand_category_id", "id", "name"]
+  },
+  {
+    "similar_tables": ["ad_request", "public.ad_request"],
+    "grouped_by": [
+      "ad_request_id",
+      "browser_id",
+      "city_id",
+      "country_id",
+      "datetime",
+      "os_id",
+      "postal_code",
+      "publisher_id",
+      "region_id"
+    ]
+  },
+  {
+    "similar_tables": ["ad_win", "public.ad_win"],
+    "grouped_by": ["ad_request_id", "cost", "creative_id", "datetime", "price"]
+  },
+  {
+    "similar_tables": ["creative", "public.creative"],
+    "grouped_by": ["brand_id", "id"]
+  },
+  {
+    "similar_tables": [
+      "ad_click",
+      "ad_conversion",
+      "ad_view",
+      "public.ad_click",
+      "public.ad_conversion",
+      "public.ad_view"
+    ],
+    "grouped_by": ["ad_request_id"]
+  },
+  {
+    "similar_tables": ["agg_daily", "agg_hourly"],
+    "grouped_by": [
+      "brand_id",
+      "browser_id",
+      "city_id",
+      "clicks",
+      "conversions",
+      "cost",
+      "country_id",
+      "creative_id",
+      "impressions",
+      "os_id",
+      "postal_code",
+      "publisher_id",
+      "region_id",
+      "spend",
+      "views",
+      "ymd"
+    ]
+  }
+]
