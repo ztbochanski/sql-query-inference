@@ -1,6 +1,7 @@
 mod query;
 mod cli;
 mod csv_ingester;
+mod inference;
 mod json_creator;
 
 use std::error::Error;
@@ -9,6 +10,7 @@ use structopt::StructOpt;
 
 use cli::Cli;
 use csv_ingester::{read_csv_file, write_to_csv};
+use inference::find_similar_tables;
 use json_creator::write_to_json;
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -50,15 +52,16 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     modified_flattened_map.sort_by_key(|metadata| metadata.table_name.clone());
 
+    let mut similar_tables = find_similar_tables(&modified_flattened_map);
 
     match args.format.as_str() {
         "json" => {
-            write_to_json("output.json", modified_flattened_map)?;
-            println!("Data has been written to output.json");
+            write_to_json("tables_output.json", modified_flattened_map)?;
+            println!("Data has been written to json");
         },
         "csv" => {
-            write_to_csv("output.csv", modified_flattened_map)?;
-            println!("Data has been written to output.csv");
+            write_to_csv("tables_output.csv", modified_flattened_map)?;
+            println!("Data has been written to csv");
         },
         _ => {
             eprintln!("Unsupported output format: {}", args.format);
