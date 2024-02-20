@@ -8,9 +8,16 @@ This tool is designed to infer tables and respective columns from a SQL query an
 
 ## CLI Usage
 
+With `Cargo`:
 ```bash
 cargo run -- --<option> <value> <csv_to_parse>
 ```
+
+Example:
+```bash
+cargo run -- --format json query_analysis_data.csv
+```
+
 
 ### Arguments
 
