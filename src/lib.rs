@@ -52,11 +52,12 @@ fn main() -> Result<(), Box<dyn Error>> {
 
     modified_flattened_map.sort_by_key(|metadata| metadata.table_name.clone());
 
-    let mut similar_tables = find_similar_tables(&modified_flattened_map);
+    let similar_tables = find_similar_tables(&modified_flattened_map);
 
     match args.format.as_str() {
         "json" => {
-            write_to_json("tables_output.json", modified_flattened_map)?;
+            write_to_json("tables_output.json", &modified_flattened_map)?;
+            write_to_json("similar_tables_output.json", &similar_tables.grouped_tables)?;
             println!("Data has been written to json");
         },
         "csv" => {
