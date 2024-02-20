@@ -23,7 +23,7 @@ impl Query {
         &self.tables
     }
 
-    fn tokenize_query(&self, query_text: &str) -> Vec<&str> {
+    fn tokenize_query(&self) -> Vec<&str> {
         self.query_text.split(|c| c == '(' || c == ')' || c == ' ').collect()
     }
     
@@ -85,7 +85,7 @@ impl Query {
             .collect();
         
         if columns.is_empty() {
-            let tokens = self.tokenize_query(&self.query_text);
+            let tokens = self.tokenize_query();
             let table_name_tokens = self.table_tokens(&tokens).split(", ").map(|t| t.to_string()).collect();
             let column_name_tokens = self.column_tokens(&tokens).iter().map(|c| c.to_string()).collect();
 
