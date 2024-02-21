@@ -11,7 +11,3 @@ regex = "1.10.3"
 serde = { version = "1.0.197", features = ["derive"] }
 serde_json = "1.0.114"
 structopt = "0.3.26"
-
-[[bin]]
-name = "query_tokenize_and_parse"
-path = "src/lib.rs"
