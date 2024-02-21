@@ -31,7 +31,14 @@ impl Query {
 
     fn table_tokens<'a>(&self, tokens: &'a [&'a str]) -> &'a str {
         let table_index = tokens.iter().position(|&r| r == "INTO").unwrap_or(0);
-        tokens.get(table_index + 1).unwrap_or(&"").trim()
+        let tokens = tokens
+            .get(table_index + 1)
+            .unwrap_or(&"")
+            .trim()
+            .split('.')
+            .last()
+            .unwrap_or(&"");
+        tokens
     }
 
     fn column_tokens<'a>(&self, tokens: &'a [&'a str]) -> Vec<&'a str> {
@@ -46,7 +53,6 @@ impl Query {
                 columns.push(cleaned_col);
             }
         }
-
         columns
     }
 
@@ -70,7 +76,6 @@ impl Query {
                 }
             }
         }
-
         columns.into_iter().collect()
     }
 
@@ -112,7 +117,6 @@ impl Query {
                 .iter()
                 .map(|c| c.to_string())
                 .collect();
-
             let table_info: Vec<TableMetadata> = vec![TableMetadata {
                 table_name: table_name_tokens,
                 columns: column_name_tokens,
