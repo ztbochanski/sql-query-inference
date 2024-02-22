@@ -2,9 +2,10 @@
   {
     "similar_tables": [
       "agg_daily",
-      "agg_hourly"
+      "agg_hourly",
+      "agg_monthly"
     ],
-    "grouped_by": [
+    "shared_columns": [
       "brand_id",
       "browser_id",
       "city_id",
@@ -21,18 +22,8 @@
       "spend",
       "views",
       "ymd"
-    ]
-  },
-  {
-    "similar_tables": [
-      "ad_click",
-      "ad_conversion",
-      "ad_view"
     ],
-    "grouped_by": [
-      "ad_request_id",
-      "datetime"
-    ]
+    "similarity_score": "0.78"
   },
   {
     "similar_tables": [
@@ -43,10 +34,23 @@
       "operating_system",
       "region"
     ],
-    "grouped_by": [
+    "shared_columns": [
       "brand_category_id",
       "id",
       "name"
-    ]
+    ],
+    "similarity_score": "0.67"
+  },
+  {
+    "similar_tables": [
+      "ad_click",
+      "ad_conversion",
+      "ad_view"
+    ],
+    "shared_columns": [
+      "ad_request_id",
+      "datetime"
+    ],
+    "similarity_score": "1.00"
   }
 ]
