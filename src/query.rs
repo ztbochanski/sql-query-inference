@@ -83,7 +83,7 @@ impl Query {
         let tables = self.extract_tables();
         let columns = self.extract_columns();
 
-        let table_names: HashMap<_, _> = tables
+        let table_name_alias_map: HashMap<_, _> = tables
             .split(", ")
             .map(|t| {
                 let parts: Vec<&str> = t.split(" as ").collect();
@@ -130,9 +130,9 @@ impl Query {
             let table_name = parts[0];
             let column_name = parts[1];
 
-            let table = table_names
+            let table = table_name_alias_map
                 .keys()
-                .find(|&k| table_names[k] == table_name)
+                .find(|&k| table_name_alias_map[k] == table_name)
                 .unwrap_or(&table_name);
 
             table_columns_map
