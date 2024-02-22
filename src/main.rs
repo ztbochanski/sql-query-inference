@@ -14,6 +14,8 @@ use inference::find_similar_tables;
 use json_creator::write_to_json;
 use query::Query;
 
+const SIMILARITY_THRESHOLD: f64 = 0.8;
+
 fn main() -> Result<(), Box<dyn Error>> {
     let args = Cli::from_args();
     let mut reader = read_csv_file(&args.input)?;
@@ -25,7 +27,7 @@ fn main() -> Result<(), Box<dyn Error>> {
         processor::process_queries(queries);
     let processed_queries: Vec<processor::Data> = processed_queries?;
 
-    let similar_tables = find_similar_tables(&processed_queries);
+    let similar_tables = find_similar_tables(&processed_queries, SIMILARITY_THRESHOLD);
 
     match args.format.as_str() {
         "json" => {
