@@ -1,9 +1,11 @@
-use crate::query::TableMetadata;
-
 use std::error::Error;
 use std::fs::File;
 use std::path::PathBuf;
-use csv::{ReaderBuilder, Writer};
+
+use csv::{Reader, ReaderBuilder, Writer};
+
+use crate::processor::Data;
+use crate::query::Query;
 
 pub fn read_csv_file(input_path: &PathBuf) -> Result<csv::Reader<File>, Box<dyn Error>> {
     let file = File::open(input_path)?;
@@ -11,7 +13,7 @@ pub fn read_csv_file(input_path: &PathBuf) -> Result<csv::Reader<File>, Box<dyn 
     Ok(reader)
 }
 
-pub fn write_to_csv(filename: &str, data: Vec<TableMetadata>) -> Result<(), Box<dyn Error>> {
+pub fn write_to_csv(filename: &str, data: Vec<Data>) -> Result<(), Box<dyn Error>> {
     let mut writer = Writer::from_path(filename)?;
 
     writer.write_record(&["table_name", "columns"])?;
@@ -22,6 +24,18 @@ pub fn write_to_csv(filename: &str, data: Vec<TableMetadata>) -> Result<(), Box<
     }
 
     writer.flush()?;
-    
+
     Ok(())
+}
+
+pub fn read_query(reader: &mut Reader<File>) -> Result<Vec<Query>, Box<dyn Error>> {
+    let mut counter: i32 = 0;
+    let mut queries: Vec<Query> = Vec::new();
+    for result in reader.deserialize::<Query>() {
+        let query: Query = result?;
+        queries.push(query);
+        counter += 1;
+    }
+    println!("Number of Queries Read: {}", counter);
+    Ok(queries)
 }
