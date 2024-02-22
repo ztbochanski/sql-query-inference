@@ -14,7 +14,7 @@ use inference::find_similar_tables;
 use json_creator::write_to_json;
 use query::Query;
 
-const SIMILARITY_THRESHOLD: f64 = 0.8;
+const SIMILARITY_THRESHOLD: f64 = 0.6;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let args = Cli::from_args();
