@@ -2,7 +2,8 @@
   {
     "table_name": "ad_click",
     "columns": [
-      "ad_request_id"
+      "ad_request_id",
+      "datetime"
     ]
   },
   {
@@ -27,7 +28,8 @@
   {
     "table_name": "ad_conversion",
     "columns": [
-      "ad_request_id"
+      "ad_request_id",
+      "datetime"
     ]
   },
   {
@@ -47,7 +49,8 @@
   {
     "table_name": "ad_view",
     "columns": [
-      "ad_request_id"
+      "ad_request_id",
+      "datetime"
     ]
   },
   {
@@ -151,7 +154,8 @@
     "table_name": "creative",
     "columns": [
       "brand_id",
-      "id"
+      "id",
+      "name"
     ]
   },
   {
@@ -162,113 +166,10 @@
     ]
   },
   {
-    "table_name": "public.ad_click",
-    "columns": [
-      "ad_request_id",
-      "datetime"
-    ]
-  },
-  {
-    "table_name": "public.ad_conversion",
-    "columns": [
-      "ad_request_id",
-      "datetime"
-    ]
-  },
-  {
-    "table_name": "public.ad_request",
-    "columns": [
-      "ad_request_id",
-      "browser_id",
-      "city_id",
-      "country_id",
-      "datetime",
-      "os_id",
-      "postal_code",
-      "publisher_id",
-      "region_id"
-    ]
-  },
-  {
-    "table_name": "public.ad_view",
-    "columns": [
-      "ad_request_id",
-      "datetime"
-    ]
-  },
-  {
-    "table_name": "public.ad_win",
-    "columns": [
-      "ad_request_id",
-      "cost",
-      "creative_id",
-      "datetime",
-      "price"
-    ]
-  },
-  {
-    "table_name": "public.brand",
-    "columns": [
-      "brand_category_id",
-      "id",
-      "name"
-    ]
-  },
-  {
-    "table_name": "public.brand_category",
-    "columns": [
-      "id",
-      "name"
-    ]
-  },
-  {
-    "table_name": "public.browser",
-    "columns": [
-      "id",
-      "name"
-    ]
-  },
-  {
-    "table_name": "public.city",
-    "columns": [
-      "id",
-      "name"
-    ]
-  },
-  {
-    "table_name": "public.creative",
-    "columns": [
-      "brand_id",
-      "id",
-      "name"
-    ]
-  },
-  {
-    "table_name": "public.operating_system",
-    "columns": [
-      "id",
-      "name"
-    ]
-  },
-  {
-    "table_name": "public.region",
-    "columns": [
-      "id",
-      "name"
-    ]
-  },
-  {
     "table_name": "region",
     "columns": [
       "id",
       "name"
-    ]
-  },
-  {
-    "table_name": "srt",
-    "columns": [
-      "brand_id",
-      "conversions"
     ]
   }
 ]
