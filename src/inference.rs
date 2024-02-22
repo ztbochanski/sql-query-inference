@@ -13,6 +13,7 @@ pub struct SimilarTables {
 pub struct TableGroup {
     pub similar_tables: Vec<String>,
     pub shared_columns: Vec<String>,
+    pub similarity_score: String,
 }
 
 pub fn find_similar_tables(metadata: &[Data], similarity_threshold: f64) -> SimilarTables {
@@ -21,9 +22,14 @@ pub fn find_similar_tables(metadata: &[Data], similarity_threshold: f64) -> Simi
     for meta in metadata.iter() {
         let mut found_similar = false;
         for (columns, tables) in grouped_tables.iter_mut() {
-            let (is_similar, _) = similar(&meta.columns, columns, similarity_threshold);
+            let (is_similar, shared_column_percentage) =
+                similar(&meta.columns, columns, similarity_threshold);
             if is_similar {
-                tables.push(meta.table_name.clone());
+                tables.push(format!(
+                    "{}->{}",
+                    meta.table_name.clone(),
+                    shared_column_percentage
+                ));
                 found_similar = true;
                 break;
             }
@@ -40,9 +46,29 @@ pub fn find_similar_tables(metadata: &[Data], similarity_threshold: f64) -> Simi
 
     let similar_tables_grouped: Vec<TableGroup> = grouped_tables_filtered
         .into_iter()
-        .map(|(columns, tables)| TableGroup {
-            similar_tables: tables,
-            shared_columns: columns,
+        .map(|(columns, tables)| {
+            let mut score_total = 0.0;
+            for table in &tables {
+                let parts = table.split("->").collect::<Vec<&str>>();
+                if parts.len() == 2 {
+                    let score = parts[1].parse::<f64>().unwrap();
+                    score_total += score;
+                }
+            }
+            let similarity_score = format!("{:.2}", score_total / (tables.len() - 1) as f64);
+            let tables = tables
+                .iter()
+                .map(|table| {
+                    let mut table_name = table.split("->").collect::<Vec<&str>>()[0].to_string();
+                    table_name = table_name.trim().to_string();
+                    table_name
+                })
+                .collect();
+            TableGroup {
+                similar_tables: tables,
+                shared_columns: columns,
+                similarity_score,
+            }
         })
         .collect();
 
