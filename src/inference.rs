@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 
 use serde::Serialize;
 
-use crate::query::TableMetadata;
+use crate::processor::Data;
 
 #[derive(Debug)]
 pub struct SimilarTables {
@@ -15,7 +15,7 @@ pub struct TableGroup {
     pub grouped_by: Vec<String>,
 }
 
-pub fn find_similar_tables(metadata: &[TableMetadata]) -> SimilarTables {
+pub fn find_similar_tables(metadata: &[Data]) -> SimilarTables {
     let mut grouped_tables: HashMap<Vec<String>, Vec<String>> = HashMap::new();
 
     for meta in metadata.iter() {
