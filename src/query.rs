@@ -1,6 +1,6 @@
 use regex::Regex;
 use serde::{Deserialize, Serialize};
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 
 #[derive(Debug, Deserialize)]
 pub struct Query {
@@ -19,6 +19,40 @@ pub struct TableMetadata {
 }
 
 impl Query {
+    pub fn tables(&self) -> Vec<String> {
+        let mut tables: Vec<String> = Vec::new();
+        if let Ok(table_names) = serde_json::from_str::<Vec<String>>(&self.extract_tables()) {
+            tables.extend(table_names);
+        } else {
+            println!("Failed to parse table names.");
+        }
+        tables
+    }
+
+    pub fn columns(&self) -> Vec<String> {
+        self.extract_columns()
+    }
+
+    pub fn tables_query_text(&self) -> Vec<String> {
+        let tokens = self.tokenize_query();
+        let tables = self
+            .table_tokens(&tokens)
+            .split(", ")
+            .map(|t| t.to_string())
+            .collect();
+        tables
+    }
+
+    pub fn columns_query_text(&self) -> Vec<String> {
+        let tokens = self.tokenize_query();
+        let columns = self
+            .column_tokens(&tokens)
+            .iter()
+            .map(|c| c.to_string())
+            .collect();
+        columns
+    }
+
     fn extract_tables(&self) -> &String {
         &self.tables
     }
@@ -77,77 +111,5 @@ impl Query {
             }
         }
         columns.into_iter().collect()
-    }
-
-    pub fn map_tables_columns(&self) -> Vec<TableMetadata> {
-        let tables = self.extract_tables();
-        let columns = self.extract_columns();
-
-        let table_name_alias_map: HashMap<_, _> = tables
-            .split(", ")
-            .map(|t| {
-                let parts: Vec<&str> = t.split(" as ").collect();
-                if let Some(table_with_schema) = parts.get(0) {
-                    let table_with_schema =
-                        table_with_schema.trim_matches(|c| c == '[' || c == '\"');
-                    let table_name = table_with_schema
-                        .split('.')
-                        .last()
-                        .unwrap()
-                        .trim_matches(|c| c == '\"');
-                    let alias = parts
-                        .get(1)
-                        .map_or("", |a| a.trim_matches(|c| c == '\"' || c == ']'));
-                    (table_name, alias)
-                } else {
-                    ("", "")
-                }
-            })
-            .collect();
-
-        if columns.is_empty() {
-            let tokens = self.tokenize_query();
-            let table_name_tokens = self
-                .table_tokens(&tokens)
-                .split(", ")
-                .map(|t| t.to_string())
-                .collect();
-            let column_name_tokens = self
-                .column_tokens(&tokens)
-                .iter()
-                .map(|c| c.to_string())
-                .collect();
-            let table_info: Vec<TableMetadata> = vec![TableMetadata {
-                table_name: table_name_tokens,
-                columns: column_name_tokens,
-            }];
-            return table_info;
-        }
-
-        let mut table_columns_map: HashMap<String, Vec<String>> = HashMap::new();
-        for column in columns {
-            let parts: Vec<&str> = column.split(".").collect();
-            let table_name = parts[0];
-            let column_name = parts[1];
-
-            let table = table_name_alias_map
-                .keys()
-                .find(|&k| table_name_alias_map[k] == table_name)
-                .unwrap_or(&table_name);
-
-            table_columns_map
-                .entry(table.to_string())
-                .or_insert(Vec::new())
-                .push(column_name.to_string());
-        }
-
-        let table_info: Vec<TableMetadata> = table_columns_map
-            .iter()
-            .map(|(k, v)| TableMetadata {
-                table_name: k.to_string(),
-                columns: v.clone(),
-            })
-            .collect();
-        table_info
     }
 }
