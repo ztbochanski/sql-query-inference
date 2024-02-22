@@ -12,16 +12,17 @@ pub struct SimilarTables {
 #[derive(Debug, Serialize)]
 pub struct TableGroup {
     pub similar_tables: Vec<String>,
-    pub grouped_by: Vec<String>,
+    pub shared_columns: Vec<String>,
 }
 
-pub fn find_similar_tables(metadata: &[Data]) -> SimilarTables {
+pub fn find_similar_tables(metadata: &[Data], similarity_threshold: f64) -> SimilarTables {
     let mut grouped_tables: HashMap<Vec<String>, Vec<String>> = HashMap::new();
 
     for meta in metadata.iter() {
         let mut found_similar = false;
         for (columns, tables) in grouped_tables.iter_mut() {
-            if is_similar(&meta.columns, columns) {
+            let (is_similar, _) = similar(&meta.columns, columns, similarity_threshold);
+            if is_similar {
                 tables.push(meta.table_name.clone());
                 found_similar = true;
                 break;
@@ -41,7 +42,7 @@ pub fn find_similar_tables(metadata: &[Data]) -> SimilarTables {
         .into_iter()
         .map(|(columns, tables)| TableGroup {
             similar_tables: tables,
-            grouped_by: columns,
+            shared_columns: columns,
         })
         .collect();
 
@@ -50,12 +51,14 @@ pub fn find_similar_tables(metadata: &[Data]) -> SimilarTables {
     }
 }
 
-fn is_similar(columns1: &[String], columns2: &[String]) -> bool {
+fn similar(columns1: &[String], columns2: &[String], similarity_threshold: f64) -> (bool, f64) {
     let set1: HashSet<_> = columns1.iter().cloned().collect();
     let set2: HashSet<_> = columns2.iter().cloned().collect();
 
-    let intersection_count = set1.intersection(&set2).count();
-    let threshold = (set1.len() + set2.len()) / 2;
-
-    intersection_count >= threshold
+    let combined_set: HashSet<_> = set1.union(&set2).cloned().collect();
+    let num_shared_columns = set1.intersection(&set2).count() as f64;
+    let total_unique_columns = (combined_set.len()) as f64;
+    let shared_column_percentage: f64 = num_shared_columns / total_unique_columns;
+    let is_similar = shared_column_percentage >= similarity_threshold;
+    (is_similar, shared_column_percentage)
 }
